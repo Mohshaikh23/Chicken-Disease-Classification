@@ -1,0 +1,26 @@
+schema: '2.0'
+stages:
+  prepare_base_model:
+    cmd: python src/CNN_Classifier/pipeline/stage_02_prepare_base_model.py
+    deps:
+    - path: config/config.yaml
+      md5: fd01ff3cf4aacdcad425b8a82dae749c
+      size: 813
+    - path: src/CNN_Classifier/pipeline/stage_02_prepare_base_model.py
+      md5: 71d02fdc9595c67180ab695270cbd848
+      size: 973
+    params:
+      params.yaml:
+        CLASSES: 2
+        IMAGE_SIZE:
+        - 224
+        - 224
+        - 3
+        INCLUDE_TOP: false
+        LEARNING_RATE: 0.01
+        WEIGHTS: imagenet
+    outs:
+    - path: artifacts/prepare_base_model
+      md5: ebd3770dd1ab72cf0e39348951f7fd10.dir
+      size: 118054560
+      nfiles: 2
