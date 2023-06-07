@@ -24,3 +24,77 @@ stages:
       md5: ebd3770dd1ab72cf0e39348951f7fd10.dir
       size: 118054560
       nfiles: 2
+  data_ingestion:
+    cmd: python src/CNN_Classifier/pipeline/stage_01_data_ingestion.py
+    deps:
+    - path: config/config.yaml
+      md5: fd01ff3cf4aacdcad425b8a82dae749c
+      size: 813
+    - path: src/CNN_Classifier/pipeline/stage_01_data_ingestion.py
+      md5: 1717caf4b2b5e8e5a547c40b8a966ede
+      size: 943
+    outs:
+    - path: artifacts/data_ingestion/Chicken-fecal-images
+      md5: 9e1f8dd2eae3c29e9d635df89d438ae4.dir
+      size: 12207807
+      nfiles: 390
+  training:
+    cmd: python src/CNN_Classifier/pipeline/stage_03_training.py
+    deps:
+    - path: artifacts/data_ingestion/Chicken-fecal-images
+      md5: 9e1f8dd2eae3c29e9d635df89d438ae4.dir
+      size: 12207807
+      nfiles: 390
+    - path: artifacts/prepare_base_model
+      md5: ebd3770dd1ab72cf0e39348951f7fd10.dir
+      size: 118054560
+      nfiles: 2
+    - path: config/config.yaml
+      md5: fd01ff3cf4aacdcad425b8a82dae749c
+      size: 813
+    - path: src/CNN_Classifier/components/prepare_callbacks.py
+      md5: 3e70707a4f0162a080240a095a753c05
+      size: 993
+    - path: src/CNN_Classifier/pipeline/stage_03_training.py
+      md5: 8a8d3a3017c0b5d35ce3f553deeb3a1c
+      size: 1257
+    params:
+      params.yaml:
+        AUGMENTATION: true
+        BATCH_SIZE: 16
+        EPOCHS: 1
+        IMAGE_SIZE:
+        - 224
+        - 224
+        - 3
+    outs:
+    - path: artifacts/training/model.h5
+      md5: 8fae03079012c3d388dcabd995fb9b43
+      size: 59337520
+  evaluation:
+    cmd: python src/CNN_Classifier/pipeline/stage_04_evaluation.py
+    deps:
+    - path: artifacts/data_ingestion/Chicken-fecal-images
+      md5: 9e1f8dd2eae3c29e9d635df89d438ae4.dir
+      size: 12207807
+      nfiles: 390
+    - path: artifacts/training/model.h5
+      md5: 8fae03079012c3d388dcabd995fb9b43
+      size: 59337520
+    - path: config/config.yaml
+      md5: fd01ff3cf4aacdcad425b8a82dae749c
+      size: 813
+    - path: src/CNN_Classifier/pipeline/stage_04_evaluation.py
+      md5: 8c7306cca3d7bd88e864feb030b7da23
+      size: 874
+    params:
+      params.yaml:
+        BATCH_SIZE: 16
+        IMAGE_SIZE:
+        - 224
+        - 224
+        - 3
+    outs:
+    - path: scores.json
+      md5: efe3460d5c28f2b6641440462f43089c
+      size: 73
